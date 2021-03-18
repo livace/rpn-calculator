@@ -1,0 +1,26 @@
+@startuml
+class REPL {
+}
+
+class Calculator {
+    Evaluate(string expression)
+}
+
+interface Operation {
+}
+
+class Transformer {
+    Transform(tokens sequence)
+}
+
+class Tokenizer {
+    Tokenize(string)
+}
+
+REPL -> Calculator::Evaluate
+Calculator -> Tokenizer::Tokenize
+Calculator -> Transformer::Transform
+Calculator -> Operation
+
+
+@enduml

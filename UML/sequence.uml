@@ -1,0 +1,13 @@
+@startuml
+
+REPL -> Calculator : expression: 1 + 3 * 4 - 2
+Calculator -> Tokenizer : expression: 1 + 3 * 4 - 2
+Tokenizer -> Calculator : tokens: [num:1, op:+, num:3, op:*, num:4, op:-, num:2]
+Calculator -> Transformer : infix notation: [num:1, op:+, num:3, op:*, num:4, op:-, num:2]
+Transformer -> Calculator : prefix notation: [num:1, num:3, num:4, op:*, op:+, num:2, op:-]
+Calculator -> Operations
+Calculator -> Operations
+Calculator -> Operations
+Calculator -> REPL : result: 11
+
+@enduml
