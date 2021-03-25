@@ -3,24 +3,30 @@ class REPL {
 }
 
 class Calculator {
-    Evaluate(string expression)
-}
-
-interface Operation {
-}
-
-class Transformer {
-    Transform(tokens sequence)
+    Evaluate(string expression, Notation notation)
 }
 
 class Tokenizer {
     Tokenize(string)
 }
 
+interface Operation {
+    Evaluate(Tokens expression)
+}
+
+enum Notation {
+    Evaluate(Tokens expression)
+}
+
+class Transformer {
+    Transform(Tokens sequence)
+}
+
 REPL -> Calculator::Evaluate
+Calculator -> Notation::Evaluate
 Calculator -> Tokenizer::Tokenize
-Calculator -> Transformer::Transform
-Calculator -> Operation
+Notation -> Operation::Evaluate
+Notation -> Transformer::Transform
 
 
 @enduml
