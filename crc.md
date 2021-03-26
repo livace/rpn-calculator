@@ -27,15 +27,12 @@
 
 
 
-## NotationInterface
+## Notation
 Интерфейс, представляющей нотацию, а так же вычисляющий выражения в этой нотации.
 
 Методы:
 * `Evaluate`. Принимает на вход последовательность токенов. Вычисляет выражение и возвращает результат. Бросает `ArithmeticException` при арифметической ошибке и `IllegalArgumentException` при синтаксической ошибке в выражении.
 
-
-## Notation implements NotationInterface
-`Enum`, содержащий разные нотации.
 
 ### Postfix implements Notation
 Постфиксная запись.
