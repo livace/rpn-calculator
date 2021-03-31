@@ -1,0 +1,41 @@
+@startuml
+skinparam linetype ortho
+
+class Token {
+    +GetNumber(): Optional<Number>
+    +GetOperation(): Optional<Operation>
+}
+
+class REPL {
+}
+
+class Calculator {
+    +Evaluate(expression: String, notation: Notation): Number
+}
+
+class Tokenizer {
+    +Tokenize(expression: String): List<Token>
+}
+
+interface Operation {
+    +Evaluate(expression: List<Token>): Number
+}
+
+enum Notation {
+    +Evaluate(expression: List<Token>): Number
+}
+
+class Transformer {
+    +Transform(sequence: List<Token>): List<Token>
+}
+
+Calculator o-- Operation
+Calculator o-- Transformer
+Calculator *-- Tokenizer
+REPL *-- Calculator
+
+Notation -> Operation
+Calculator-> Notation
+
+
+@enduml

@@ -1,0 +1,17 @@
+@startuml
+
+REPL -> Calculator : expression: 1 + 3 * 4 - 2, Notation::Infix
+Calculator -> Tokenizer : expression: 1 + 3 * 4 - 2
+Tokenizer -> Calculator : tokens: [num:1, op:+, num:3, op:*, num:4, op:-, num:2]
+Calculator -> NInfix : [num:1, op:+, num:3, op:*, num:4, op:-, num:2]
+NInfix -> Transformer : [num:1, op:+, num:3, op:*, num:4, op:-, num:2]
+Transformer -> NInfix : [num:1, num:3, num:4, op:*, op:+, num:2, op:-]
+NInfix -> NPostfix : [num:1, num:3, num:4, op:*, op:+, num:2, op:-]
+NPostfix -> Operation
+NPostfix -> Operation
+NPostfix -> Operation
+NPostfix -> NInfix : result: 11
+NInfix -> Calculator : result: 11
+Calculator -> REPL : result: 11
+
+@enduml
