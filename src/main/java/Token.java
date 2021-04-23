@@ -32,7 +32,7 @@ public class Token {
             stringValue = "operation";
         }
         if (special.isPresent()) {
-            stringValue = special.toString();
+            stringValue = special.get().toString();
         }
         return String.format("Token[%s]", stringValue);
     }

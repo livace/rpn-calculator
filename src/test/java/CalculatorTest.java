@@ -40,4 +40,44 @@ public class CalculatorTest {
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("", Notation.Postfix));
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("-1 sqrt", Notation.Postfix));
     }
+
+    @Test
+    void InfixBasicTest() {
+        Calculator calc = new Calculator(Notation.Infix);
+        assertThat(calc.Evaluate("1 + 2")).isEqualTo("3");
+        assertThat(calc.Evaluate("1 - 2")).isEqualTo("-1");
+        assertThat(calc.Evaluate("100 * 0")).isEqualTo("0");
+        assertThat(calc.Evaluate("max(100 0)")).isEqualTo("100");
+        assertThat(calc.Evaluate("100 min 0")).isEqualTo("0");
+        assertThat(calc.Evaluate("sqrt 100")).isEqualTo("10");
+        assertThat(calc.Evaluate("100 // 3")).isEqualTo("33");
+        assertThat(calc.Evaluate("100 % 3")).isEqualTo("1");
+        assertThat(calc.Evaluate("abs 100")).isEqualTo("100");
+        assertThat(calc.Evaluate("abs(-100)")).isEqualTo("100");
+        assertThat(calc.Evaluate("99 + 1 % 3")).isEqualTo("100");
+        assertThat(calc.Evaluate("(99 + 1) % 3")).isEqualTo("1");
+
+        assertThat(calc.Evaluate("1 + 2", Notation.Infix)).isEqualTo("3");
+        assertThat(calc.Evaluate("1 - 2", Notation.Infix)).isEqualTo("-1");
+        assertThat(calc.Evaluate("100 * 0", Notation.Infix)).isEqualTo("0");
+        assertThat(calc.Evaluate("100 max 0", Notation.Infix)).isEqualTo("100");
+        assertThat(calc.Evaluate("min(100 0)", Notation.Infix)).isEqualTo("0");
+        assertThat(calc.Evaluate("sqrt(100)", Notation.Infix)).isEqualTo("10");
+        assertThat(calc.Evaluate("100 // 3", Notation.Infix)).isEqualTo("33");
+        assertThat(calc.Evaluate("100 % 3", Notation.Infix)).isEqualTo("1");
+        assertThat(calc.Evaluate("abs 100", Notation.Infix)).isEqualTo("100");
+        assertThat(calc.Evaluate("abs -100", Notation.Infix)).isEqualTo("100");
+    }
+
+    @Test
+    void InfixErrorTest() {
+        Calculator calc = new Calculator(Notation.Infix);
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("1 +", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("1 2 3 +", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("1 0 %", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("1 0 /", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("1 0 //", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("", Notation.Infix));
+        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> calc.Evaluate("-1 sqrt", Notation.Infix));
+    }
 }

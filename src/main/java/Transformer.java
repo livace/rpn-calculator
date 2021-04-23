@@ -44,6 +44,9 @@ public enum Transformer implements TransformerInterface {
                 });
             }
             while (!queue.empty()) {
+                if (queue.peek().GetSpecial().isPresent()) {
+                    throw new IllegalArgumentException("Unmatched bracket: missing closing bracket");
+                }
                 result.push(queue.pop());
             }
             return result.toArray(new Token[0]);
