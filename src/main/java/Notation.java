@@ -28,5 +28,12 @@ public enum Notation implements NotationInterface {
             }
             return stack.pop();
         }
+    },
+    Infix {
+        @Override
+        public BigDecimal Evaluate(Token[] expression) {
+            Transformer transformer = Transformer.InfixToPostfix;
+            return Postfix.Evaluate(transformer.Transform(expression));
+        }
     }
 }

@@ -5,16 +5,16 @@ import java.util.Map;
 
 public class DefaultOperations {
     public Map<String, Operation> RegisterAll() {
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].add(args[1]), "+");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].subtract(args[1]), "-");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].multiply(args[1]), "*");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].divide(args[1]), "/");
-        RegisterOperation(1, (OperationEvaluator) (args) -> args[0].abs(), "abs");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].divideToIntegralValue(args[1]), "//");
-        RegisterOperation(1, (OperationEvaluator) (args) -> args[0].sqrt(MathContext.DECIMAL128), "sqrt");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].remainder(args[1]), "%");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].min(args[1]), "min");
-        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].max(args[1]), "max");
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].add(args[1]), "+", 0);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].subtract(args[1]), "-", 0);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].multiply(args[1]), "*", 1);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].divide(args[1], MathContext.DECIMAL128), "/", 1);
+        RegisterOperation(1, (OperationEvaluator) (args) -> args[0].abs(), "abs", 2);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].divideToIntegralValue(args[1]), "//", 1);
+        RegisterOperation(1, (OperationEvaluator) (args) -> args[0].sqrt(MathContext.DECIMAL128), "sqrt", 2);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].remainder(args[1]), "%", 1);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].min(args[1]), "min", 2);
+        RegisterOperation(2, (OperationEvaluator) (args) -> args[0].max(args[1]), "max", 2);
         return operations;
     }
 
@@ -29,18 +29,11 @@ public class DefaultOperations {
         operations.put(name, operation);
     }
 
-    private void RegisterOperation(int argumentCount, OperationEvaluator evaluator, String name) {
-        RegisterOperation(Evaluator2Operation(argumentCount, evaluator), name);
+    private void RegisterOperation(int argumentCount, OperationEvaluator evaluator, String name, int priority) {
+        RegisterOperation(Evaluator2Operation(argumentCount, evaluator, priority), name);
     }
 
-    private void RegisterOperation(int argumentCount, OperationEvaluator evaluator, String[] names) {
-        Operation operation = Evaluator2Operation(argumentCount, evaluator);
-        for (String name: names) {
-            RegisterOperation(operation, name);
-        }
-    }
-
-    private Operation Evaluator2Operation(int argumentCount, OperationEvaluator evaluator) {
+    private Operation Evaluator2Operation(int argumentCount, OperationEvaluator evaluator, int priority) {
         return new Operation() {
             @Override
             public BigDecimal Evaluate(BigDecimal[] expression) {
@@ -53,6 +46,11 @@ public class DefaultOperations {
             @Override
             public int GetArgumentCount() {
                 return argumentCount;
+            }
+
+            @Override
+            public int GetPriority() {
+                return priority;
             }
         };
     }

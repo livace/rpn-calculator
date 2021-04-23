@@ -57,6 +57,11 @@ public class TokenTest {
             public int GetArgumentCount() {
                 return 0;
             }
+
+            @Override
+            public int GetPriority() {
+                return 0;
+            }
         };
         Token token = new Token(op);
         assertThat(token.GetNumber().isEmpty()).isTrue();
