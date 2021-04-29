@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -10,10 +12,7 @@ public class Calculator {
         return Evaluate(expression, defaultNotation);
     }
 
-    public BigDecimal Evaluate(String expression, Notation notation) {
-        if (notation == null) {
-            notation = defaultNotation;
-        }
+    public BigDecimal Evaluate(String expression, @NotNull Notation notation) {
         Token[] tokens = tokenizer.Tokenize(expression, operationMap);
         return notation.Evaluate(tokens);
     }

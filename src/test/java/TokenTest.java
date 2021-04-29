@@ -28,6 +28,7 @@ public class TokenTest {
         TestOne(1000000000);
         TestOne(Integer.MAX_VALUE);
         TestOne(Integer.MIN_VALUE);
+        assertThat(new Token(1).toString()).isEqualTo("Token[1]");
     }
 
     @Test
@@ -43,6 +44,7 @@ public class TokenTest {
         TestOne(new BigDecimal(0));
         TestOne(new BigDecimal(Math.PI));
         TestOne(new BigDecimal(-Math.PI));
+        assertThat(new Token(new BigDecimal(1)).toString()).isEqualTo("Token[1]");
     }
 
     @Test
@@ -57,10 +59,16 @@ public class TokenTest {
             public int GetArgumentCount() {
                 return 0;
             }
+
+            @Override
+            public int GetPriority() {
+                return 0;
+            }
         };
         Token token = new Token(op);
         assertThat(token.GetNumber().isEmpty()).isTrue();
         assertThat(token.GetOperation().isPresent()).isTrue();
         assertThat(token.GetOperation().get()).isEqualTo(op);
+        assertThat(token.toString()).isEqualTo("Token[operation]");
     }
 }
