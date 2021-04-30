@@ -21,7 +21,7 @@ public class CLI {
     @Parameter(names = {"--shell"}, description = "launch in shell mode")
     private boolean shell = false;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         CLI main = new CLI();
         JCommander jc = JCommander.newBuilder()
                 .addObject(main)

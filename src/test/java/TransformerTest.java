@@ -22,7 +22,7 @@ public class TransformerTest {
     void PostfixToInfixTest() {
         Transformer transformer = Transformer.PostfixToInfix;
         var result = transformer.Transform(Tokenize("1 2 +"));
-        var expected = Tokenize("2 + 1");
+        var expected = Tokenize("1 + 2");
         System.out.println(Arrays.toString(result));
         System.out.println(Arrays.toString(expected));
         assertThat(Arrays.equals(result, expected));
