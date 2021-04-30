@@ -2,6 +2,9 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,9 @@ public class CLI {
 
     @Parameter(names = {"--help", "-h"}, help = true)
     private boolean help = false;
+
+    @Parameter(names = {"--shell"}, description = "launch in shell mode")
+    private boolean shell = false;
 
     public static void main(String[] args) {
         CLI main = new CLI();
@@ -33,7 +39,22 @@ public class CLI {
         main.run();
     }
 
-    void run() {
+    void launchShell() throws IOException {
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
+        Calculator calc = new Calculator(Notation.Infix);
+        while (true) {
+            String line = reader.readLine();
+            System.out.println(calc.Evaluate(line));
+        }
+    }
+
+    void run() throws IOException {
+        if (shell) {
+            launchShell();
+            return;
+        }
+
         boolean success = true;
         Calculator calc = new Calculator(Notation.Infix);
         for (String expression : expressions) {
