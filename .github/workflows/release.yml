@@ -1,0 +1,103 @@
+name: Release for all OS and docker
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 16
+          distribution: 'adopt'
+
+      - name: Cache Maven Packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and test with maven
+        run: mvn -B --file pom.xml --update-snapshots verify
+
+      - name: Upload resulting jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable-jar
+          path: target/*-jar-with-dependencies.jar
+
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
+
+  build-native:
+    needs: [build-jar]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        include:
+          - os: windows-latest
+            filename: calc-win-amd64
+            executablefilename: calc-win-amd64.exe
+          - os: ubuntu-latest
+            imagearg: --static
+            filename: calc-linux-amd64
+            executablefilename: calc-linux-amd64
+          - os: macOS-latest
+            filename: calc-macos-amd64
+            executablefilename: calc-macos-amd64
+
+    steps:
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        if: runner.os == 'Windows'
+
+      - name: Download executable jar
+        uses: actions/download-artifact@v2
+        with:
+          name: executable-jar
+
+      - name: Setup graalvm
+        uses: ayltai/setup-graalvm@v1
+        with:
+          java-version: 16
+          graalvm-version: 21.1.0
+          native-image: true
+
+      - name: Create native executable
+        run: native-image ${{ matrix.imagearg }} --no-server -jar *.jar ${{ matrix.filename }}
+
+      - name: Upload native executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: executables
+          path: ${{ matrix.executablefilename }}
+
+
+  release:
+    needs: [ build-native ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download ubuntu executable
+        uses: actions/download-artifact@v2
+        with:
+          name: executables
+          path: executables
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            executables/*
+

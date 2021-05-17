@@ -1,0 +1,42 @@
+name: Build, test and release ubuntu
+
+on:
+  push:
+    branches: [ main ]
+  pull_request: 
+    branches: [ main ]
+
+
+jobs:
+  build-jar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 16
+          distribution: 'adopt'
+
+      - name: Cache Maven Packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build and test with maven
+        run: mvn -B --file pom.xml --update-snapshots verify
+
+      - name: Upload resulting jar
+        uses: actions/upload-artifact@v2
+        with:
+          name: executable-jar
+          path: target/*-jar-with-dependencies.jar
+
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
+
