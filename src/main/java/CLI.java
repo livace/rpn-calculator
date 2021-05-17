@@ -1,39 +1,23 @@
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.JCommander;
+import picocli.CommandLine;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
-public class CLI {
-    @Parameter(names = {"-e", "--expression"}, description = "expression to evaluate")
+public class CLI implements Callable<Integer> {
+    @Parameters(description = "expression to evaluate")
     private List<String> expressions = new ArrayList<>();
 
-    @Parameter(names = {"-f", "--file"}, description = "name of file with expressions")
+    @Option(names = {"-f", "--file"}, description = "name of file with expressions")
     private List<String> filenames = new ArrayList<>();
 
-    @Parameter(names = {"--help", "-h"}, help = true)
+    @Option(names = {"--help", "-h"}, usageHelp = true, description = "display a help message")
     private boolean help = false;
 
-    public static void main(String[] args) {
-        CLI main = new CLI();
-        JCommander jc = JCommander.newBuilder()
-                .addObject(main)
-                .build();
-        try {
-            jc.parse(args);
-        } catch (Exception e) {
-            jc.usage();
-            System.exit(1);
-        }
-        if (main.help) {
-            jc.usage();
-            return;
-        }
-        main.run();
-    }
-
-    void run() {
+    @Override
+    public Integer call() {
         boolean success = true;
         Calculator calc = new Calculator(Notation.Infix);
         for (String expression : expressions) {
@@ -50,7 +34,12 @@ public class CLI {
             success &= evaluator.EvaluateFile(filename);
         }
         if (!success) {
-            System.exit(1);
+            return 1;
         }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        System.exit(new CommandLine(new CLI()).execute(args));
     }
 }
