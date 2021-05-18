@@ -117,6 +117,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <from>
+                        <image>
+                            docker.io/bellsoft/liberica-openjdk-alpine-musl:16.0.1-9
+                        </image>
+                    </from>
+                    <to>
+                        <image>docker.io/andser612345/${project.artifactId}:latest</image>
+                    </to>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

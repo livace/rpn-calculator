@@ -1,4 +1,4 @@
-name: Release for all OS and docker
+name: Release native binary
 
 on:
   push:
