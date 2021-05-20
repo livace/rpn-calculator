@@ -27,7 +27,7 @@ public class Tokenizer {
                 if (op == null) {
                     throw new IllegalArgumentException("Unknown operation name '" + splitted[i] + "'");
                 }
-                result[i] = new Token(op);
+                result[i] = new Token(op, splitted[i]);
             }
         }
         return result;

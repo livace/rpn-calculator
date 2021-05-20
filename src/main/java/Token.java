@@ -1,12 +1,14 @@
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import picocli.CommandLine;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public class Token {
-    public Token(@NotNull Operation operation) {
+    public Token(@NotNull Operation operation, @NotNull String name) {
         this.operation = Optional.of(operation);
+        this.name = name;
     }
 
     public Token(@NotNull BigDecimal number) {
@@ -24,17 +26,25 @@ public class Token {
 
     @Override
     public String toString() {
-        String stringValue = "Unknown";
+        return String.format("Token[%s]", printableString());
+    }
+
+    public String printableString() {
         if (number.isPresent()) {
-            stringValue = number.get().toString();
+            return number.get().toString();
         }
         if (operation.isPresent()) {
-            stringValue = "operation";
+            return name;
         }
         if (special.isPresent()) {
-            stringValue = special.get().toString();
+            if (special.get() == SpecialToken.OpenBracket) {
+                return "(";
+            }
+            if (special.get() == SpecialToken.CloseBracket) {
+                return ")";
+            }
         }
-        return String.format("Token[%s]", stringValue);
+        return "Unknown";
     }
 
     @NotNull
@@ -45,6 +55,10 @@ public class Token {
     @NotNull
     public Optional<Operation> GetOperation() {
         return operation;
+    }
+    // can be called only on operation
+    public String GetName() {
+        return name;
     }
 
     @NotNull
@@ -59,4 +73,5 @@ public class Token {
     private Optional<Operation> operation = Optional.empty();
     @NotNull
     private Optional<SpecialToken> special = Optional.empty();
+    private String name = "";
 }

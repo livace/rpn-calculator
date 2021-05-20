@@ -8,13 +8,16 @@ public class Calculator {
         this.defaultNotation = defaultNotation;
     }
 
+    public Token[] Tokenize(String expression) {
+        return tokenizer.Tokenize(expression, operationMap);
+    }
+
     public BigDecimal Evaluate(String expression) {
         return Evaluate(expression, defaultNotation);
     }
 
     public BigDecimal Evaluate(String expression, @NotNull Notation notation) {
-        Token[] tokens = tokenizer.Tokenize(expression, operationMap);
-        return notation.Evaluate(tokens);
+        return notation.Evaluate(Tokenize(expression));
     }
 
     private final Notation defaultNotation;

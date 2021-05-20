@@ -65,7 +65,7 @@ public class TokenTest {
                 return 0;
             }
         };
-        Token token = new Token(op);
+        Token token = new Token(op, "operation");
         assertThat(token.GetNumber().isEmpty()).isTrue();
         assertThat(token.GetOperation().isPresent()).isTrue();
         assertThat(token.GetOperation().get()).isEqualTo(op);
