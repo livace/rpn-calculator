@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.Callable;
 
@@ -28,6 +29,9 @@ public class CLI implements Callable<Integer> {
 
     @Option(names = {"--mode"}, description = "Calculator mode. One of 'evaluate'(default) and 'transform'")
     private String mode = "evaluate";
+
+    @Option(names = {"-p", "--port"}, description = "Port to bind http json api")
+    Optional<Short> port;
 
     private Calculator calc = null;
     private TransformerInterface transformer = null;
@@ -137,6 +141,10 @@ public class CLI implements Callable<Integer> {
                 return 1;
             }
             return 0;
+        }
+
+        if (port.isPresent()) {
+            success &= ((new Web(port.get())).start() == 0);
         }
 
         if (!success) {
