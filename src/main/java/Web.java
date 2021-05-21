@@ -57,6 +57,7 @@ class ApiHandler implements HttpHandler {
                 } else {
                     throw new IllegalArgumentException("Unknown notation " + data.notation);
                 }
+                httpExchange.getResponseHeaders().put("Content-Type", Collections.singletonList("application/json"));
                 setResponse(httpExchange, new JSONObject(new HashMap<String, String>() {{
                     put("result", calc.Evaluate(data.expression, notation).toString());
                 }}).toString(), 200);
